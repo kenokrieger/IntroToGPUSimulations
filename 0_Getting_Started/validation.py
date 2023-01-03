@@ -25,9 +25,14 @@ def main():
     a simulation.
     """
     magnetisation = np.loadtxt("magnetisation.dat")
+    plt.plot(magnetisation)
+    plt.xlabel("Timesteps")
+    plt.ylabel("Relative Magnetisation")
+    plt.savefig("Magnetisation.pdf", dpi=300)
+    plt.close("all")
+
     bins, log_returns, cumulative_returns = compute_statistics(magnetisation)
     plt.plot(bins, cumulative_returns, label="Cumulative returns")
-
     # select region for power law fitting
     power_law_bins = np.where((bins > POWER_LAW_REGION[0]) & (bins < POWER_LAW_REGION[1]))
     bins = bins[power_law_bins]
@@ -38,6 +43,7 @@ def main():
     # to ensure that the weights of the measurements are considered
     # (there exist a lot more data points for lower values than for higher values)
     params = fit_power_law(bins, cumulative_returns)
+
     plt.plot(bins, 10 ** (fit_func(np.log10(bins), *params)),
              label=f"$a x^{{-\\tau}}$ with $\\tau={-params[0]:.2f}$",
              color="red")
@@ -47,7 +53,6 @@ def main():
     plt.xlabel("Return")
     plt.ylabel("Count")
     plt.legend(bbox_to_anchor=(1.0, 1.0))
-
     plt.text(1.05, 0.2, INFO, transform=plt.gca().transAxes)
     plt.savefig("Cumulative_Return_Distribution.pdf", dpi=300)
     return 0
