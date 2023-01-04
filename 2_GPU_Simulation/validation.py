@@ -1,3 +1,5 @@
+from glob import glob
+
 import numpy as np
 from scipy.optimize import curve_fit
 
@@ -9,15 +11,15 @@ except IOError:
     pass
 
 
-POWER_LAW_REGION = (0.06, 1.5)  # x coordinates of the power law
+POWER_LAW_REGION = (0.01, 2.0)  # x region of the power law
 INFO = "\n".join((
     "Simulation Parameters:",
-    "Size: 32$\\,$x$\\,$32",
+    "Size: 10240$\\,$x$\\,$10240",
     "$\\beta = 1.0$",
     "$j = 1.0$",
     "$\\alpha = 8.0$",
     "Iterations: $10^4$",
-    "Spinflips per ns: $8.73\\cdot 10^{-5}$"
+    "Spinflips per ns: 2.57"
 ))
 
 
@@ -26,7 +28,7 @@ def main():
     Generate some statistics based on the recorded magnetisation of
     a simulation.
     """
-    magnetisation = np.loadtxt("magnetisation.dat")
+    magnetisation = load_magnetisation()
     plt.plot(magnetisation)
     plt.xlabel("Timesteps")
     plt.ylabel("Relative Magnetisation")
@@ -54,10 +56,30 @@ def main():
     plt.ylim(1, 20_000)
     plt.xlabel("Return")
     plt.ylabel("Count")
-    plt.legend(bbox_to_anchor=(1.0, 1.0))
+    plt.legend(bbox_to_anchor=(1.68, 1.0))
     plt.text(1.05, 0.2, INFO, transform=plt.gca().transAxes)
     plt.savefig("Cumulative_Return_Distribution.pdf", dpi=300)
     return 0
+
+
+def load_magnetisation():
+    """
+    Concatenate all magnetisation files found in a directory
+    to one big array.
+
+    Returns:
+        np.ndarray: The recorded magnetisation.
+
+    """
+    magnetisation = np.array([])
+    magfiles = "magnetisation_*.dat"
+    for magfile in sorted(
+        glob(magfiles),
+        key=lambda m: int("".join([s for s in m if s.isdigit()]))
+    ):
+        current_mag = np.loadtxt(magfile)
+        magnetisation = np.hstack((magnetisation, current_mag))
+    return magnetisation
 
 
 def compute_statistics(magnetisation):

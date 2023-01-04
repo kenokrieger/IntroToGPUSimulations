@@ -24,7 +24,18 @@ except it now requires a configuration file instead of writing the
 parameters directly in the script. Again, change into
 ```1_Preparing_for_the_GPU``` and run ```simulation.py``` and 
 ```validation.py``` to generate some plots. Check your results. Notice also
-that the simulation already runs about 10 times faster (woah!).
+that the simulation already runs about 10 times faster, but the code has
+also got quite a bit longer.
 
 ## 2. The first GPU simulation
 
+You may now try out to run the first GPU accelerated simulation.
+First, you need to install the CUDA Programming Toolkit and Python's
+numba module. Then you can change into the directory ```2_GPU_Simulation```
+and execute ```simulation.py```. Compare the execution times to the
+previous implementation. Why is it not faster as promised?
+
+This is because the lattice we are simulating is too small for a GPU. Try 
+increasing the lattice size and compare the spin updates per nanosecond.
+You should notice that it drastically increases with lattice size. You
+can go up to 20480 x 20480 lattices to see a performance increase.
