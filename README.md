@@ -17,4 +17,14 @@ the two plots ```Magnetisation.pdf``` and
 find an exponent of about 1 for the power law of the cumulative
 return distribution, your findings match the expected results.
 
-## 1. Preparing the simulation
+## 1. Preparing the GPU simulation
+
+The first attempt at parallelisation runs exactly as the previous simulation,
+except it now requires a configuration file instead of writing the 
+parameters directly in the script. Again, change into
+```1_Preparing_for_the_GPU``` and run ```simulation.py``` and 
+```validation.py``` to generate some plots. Check your results. Notice also
+that the simulation already runs about 10 times faster (woah!).
+
+## 2. The first GPU simulation
+
