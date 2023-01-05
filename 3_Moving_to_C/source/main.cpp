@@ -282,7 +282,6 @@ int main(int argc, char** argv) {
   }
   timer::time_point stop = timer::now();
   file.close();
-  dump_lattice(black_tiles, white_tiles, grid_width, grid_height);
   double duration = (double) std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
   double spin_updates_per_nanosecond = grid_width * grid_height / duration * 1e-3 * total_updates;
   printf("Total computing time: %f\n", duration * 1e-6);

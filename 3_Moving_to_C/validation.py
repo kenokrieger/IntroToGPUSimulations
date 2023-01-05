@@ -19,7 +19,7 @@ INFO = "\n".join((
     "$j = 1.0$",
     "$\\alpha = 8.0$",
     "Iterations: $10^4$",
-    "Spinflips per ns: 0.028"
+    "Spinflips per ns: 0.053"
 ))
 
 

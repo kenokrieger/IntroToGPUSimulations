@@ -4,6 +4,12 @@ This repository contains example code for a guide on
 GPU accelerated simulations. The folders each contain
 examples for the matching section name in the guide.
 
+**I wrote all the programs using Jetbrain's respective IDEs
+(free pro version for students) on my Ubuntu 20.04 machine.
+Most if not all the code should be cross-platform compatible,
+but I did not test it on any other OS. If you do, feel free to
+share your experiences with me!**
+
 ## 0. Getting started
 
 To conduct your first simulation of the Bornholdt Model 
@@ -39,3 +45,22 @@ This is because the lattice we are simulating is too small for a GPU. Try
 increasing the lattice size and compare the spin updates per nanosecond.
 You should notice that it drastically increases with lattice size. You
 can go up to 20480 x 20480 lattices to see a performance increase.
+
+## 3. Moving to C
+
+The simulation now runs reasonably fast, but we can do better. However,
+we need to venture deeper in the programming world and use a lower
+level language such as C. C has the extension CUDA C which allows us to
+take full control of our GPU. To prepare for this, we first take a step
+back and write a simple C/C++ program as a little warm up.
+
+To run the program change into the directory ```3_Moving_to_C``` and 
+build the application using CMake (if you are new to working with
+compiling and building a program, I recommend opening the directory with
+Jetbrain's IDE Clion as it will take care of all the compiling for you).
+You can then run the application either in the IDE of your choice or 
+in the command line with ```./multising```. We lost some computation 
+speed but drastically outperformed the raw python implementation.
+Again, you can check your results by executing ```validation.py```.
+
+## 4. The second GPU simulation
