@@ -5,8 +5,6 @@ from numba import cuda
 from numba.cuda.random import create_xoroshiro128p_states
 from sys import argv
 
-MAX_FILE_SIZE = 100_000
-
 
 def read_config_file(filename):
     """
@@ -56,7 +54,7 @@ def main():
     blocks = (32, 32)
     total_number_of_threads = (16 ** 2) * (32 ** 2)
     rng_states = create_xoroshiro128p_states(total_number_of_threads, seed=seed)
-    magnetisation = np.empty((min(total_updates, MAX_FILE_SIZE), ), dtype=float)
+    magnetisation = np.empty((total_updates, ), dtype=float)
     magnetisation[:] = np.nan
 
     init_traders[blocks, threads_per_block](rng_states, d_black,
@@ -64,24 +62,17 @@ def main():
     init_traders[blocks, threads_per_block](rng_states, d_white,
                                             shape, init_up)
 
-    save_filename = "magnetisation_0.dat"
     start = datetime.now()
     for iteration in range(total_updates):
         global_market = update(
             rng_states, d_black, d_white, reduced_neighbor_coupling,
             reduced_alpha, shape
         )
-        magnetisation[iteration % MAX_FILE_SIZE] = global_market
-        if iteration and not (iteration + 1) % MAX_FILE_SIZE:
-            np.savetxt(save_filename, magnetisation)
-            magnetisation[:] = np.nan
-            save_filename = f"magnetisation_{iteration + 1}.dat"
+        magnetisation[iteration] = global_market
 
     elapsed_time = (datetime.now() - start)
     cuda.close()
-    non_empty_values = np.where(~np.isnan(magnetisation))
-    np.savetxt(save_filename,
-               magnetisation[non_empty_values])
+    np.savetxt("magnetisation.dat", magnetisation)
     flips_per_ns = total_updates * (grid_width * grid_height)
     flips_per_ns /= (elapsed_time.seconds * 1e9
                      + elapsed_time.microseconds * 1e3)

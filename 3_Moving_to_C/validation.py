@@ -11,15 +11,15 @@ except IOError:
     pass
 
 
-POWER_LAW_REGION = (0.01, 2.0)  # x region of the power law
+POWER_LAW_REGION = (0.1, 2.0)  # x region of the power law
 INFO = "\n".join((
     "Simulation Parameters:",
-    "Size: 10240$\\,$x$\\,$10240",
+    "Size: 32$\\,$x$\\,$32",
     "$\\beta = 1.0$",
     "$j = 1.0$",
     "$\\alpha = 8.0$",
     "Iterations: $10^4$",
-    "Spinflips per ns: 2.57"
+    "Spinflips per ns: 0.028"
 ))
 
 
