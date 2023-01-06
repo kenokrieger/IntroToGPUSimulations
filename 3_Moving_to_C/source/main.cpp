@@ -262,7 +262,7 @@ int main(int argc, char** argv) {
   float reduced_j = -2.0f * beta * j;
 
   // allocate memory for the arrays
-  white_tiles = (signed char*) malloc(sizeof(signed char) * grid_width * grid_height / 2);
+  white_tiles = (signed char*) malloc(sizeof(signed char)* grid_width * grid_height / 2);
   black_tiles = (signed char*) malloc(sizeof(signed char) * grid_width * grid_height / 2);
   probabilities = (float *) malloc(10 * sizeof(float));
   // initialise the random number generator
