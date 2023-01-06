@@ -9,7 +9,7 @@ using std::string; using std::map;
 
 #define timer std::chrono::high_resolution_clock
 #define THREADS_X (16)
-#define THREADS_Y (16)
+#define THREADS_Y (32)
 #define DIV_UP(a,b)  (((a) + ((b) - 1)) / (b))
 
 
@@ -55,6 +55,12 @@ map<string, string> read_config_file(const string& config_filename, const string
 }
 
 
+/**
+ * @brief Check if the chosen lattice dimensions are eligible for computation.
+ *
+ * @param lattice_width The number of horizontal entries in the lattice.
+ * @param lattice_height The number of vertical entries in the lattice.
+ */
 void validate_grid(const long long lattice_width, const long long lattice_height) {
   if (!lattice_width || (lattice_width % 2) || ((lattice_width / 2) % THREADS_X)) {
     fprintf(stderr, "\nPlease specify an lattice_width multiple of %d\n\n",
@@ -90,7 +96,7 @@ int main(int argc, char** argv) {
   float j = std::stof(config["j"]);
   float beta = std::stof(config["beta"]);
   if (config.count("init_up")) {
-    params.percentage_up = std::stoull(config["init_up"]);
+    params.percentage_up = std::stof(config["init_up"]);
   } else {
     params.percentage_up = 0.5;
   }
@@ -102,9 +108,10 @@ int main(int argc, char** argv) {
   params.reduced_alpha = -2.0f * beta * alpha;
   params.reduced_j = -2.0f * beta * j;
   validate_grid(params.lattice_width, params.lattice_height);
-  params.blocks = (DIV_UP(params.lattice_width / 2, THREADS_X),
-                   DIV_UP(params.lattice_height, THREADS_Y));
-  params.threads_per_block = (THREADS_X, THREADS_Y);
+  params.blocks.x = DIV_UP(params.lattice_width / 2, THREADS_X);
+  params.blocks.y = DIV_UP(params.lattice_height, THREADS_Y);
+  params.threads_per_block.x = THREADS_X;
+  params.threads_per_block.y = THREADS_Y;
   // allocate memory for the arrays
   CHECK_CUDA(cudaMalloc(&d_white_tiles, params.lattice_height * params.lattice_width / 2 * sizeof(*d_white_tiles)))
   CHECK_CUDA(cudaMalloc(&d_black_tiles, params.lattice_height * params.lattice_width / 2 * sizeof(*d_black_tiles)))

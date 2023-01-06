@@ -64,3 +64,19 @@ speed but drastically outperformed the raw python implementation.
 Again, you can check your results by executing ```validation.py```.
 
 ## 4. The second GPU simulation
+
+With our new gained knowledge, it is now time to revisit our GPU.
+
+To run the program change into ```4_CUDA_C``` and build the application
+using CMake. This time it requires to add the ```$CUDA_INSTALLATION/include```
+as a path for includes to the compiler. You can run the program just as 
+before with one minor change: the parameters ```grid_height``` and
+```grid_width``` are now called ```lattice_height``` and
+```lattice_width``` to not confuse them with the name ```grid```
+from the NVIDIA programming model. You can check the computation speed
+and see the same phenomenon as with the Python GPU implementation. The 
+simulation is also roughly two times faster than its counterpart in Python
+but also roughly 10 times more complex to read.
+
+## 5. Give it all we got
+

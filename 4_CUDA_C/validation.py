@@ -1,5 +1,3 @@
-from glob import glob
-
 import numpy as np
 from scipy.optimize import curve_fit
 
@@ -11,15 +9,15 @@ except IOError:
     pass
 
 
-POWER_LAW_REGION = (0.1, 2.0)  # x region of the power law
+POWER_LAW_REGION = (1e-4, 2.0)  # x region of the power law
 INFO = "\n".join((
     "Simulation Parameters:",
-    "Size: 32$\\,$x$\\,$32",
+    "Size: 10240$\\,$x$\\,$10240",
     "$\\beta = 1.0$",
     "$j = 1.0$",
     "$\\alpha = 8.0$",
     "Iterations: $10^4$",
-    "Spinflips per ns: 0.053"
+    "Spinflips per ns: 5.81"
 ))
 
 
@@ -75,11 +73,13 @@ def compute_statistics(magnetisation):
 
     """
     log_returns = np.abs(np.diff(np.log(np.abs(magnetisation))))
-    start = np.log2(1e-3)
-    end = np.log2(15)
+    print(np.min(np.abs(log_returns)))
+    print(np.max(np.abs(log_returns)))
+    start = np.log2(1e-6)
+    end = np.log2(2)
     bins = np.logspace(start, end, base=2.0, num=500)
     counts, bins = np.histogram(np.abs(log_returns), bins=bins)
-
+    print(np.sum(counts))
     non_zero_counts = np.where(counts > 0.0)
     bins = bins[non_zero_counts]
     counts = counts[non_zero_counts]
@@ -87,6 +87,7 @@ def compute_statistics(magnetisation):
     np.savetxt(f"return_bins.dat", bins)
     np.savetxt(f"return_distribution.dat", counts)
     cumulative_distribution = np.flip(np.cumsum(np.flip(counts)))
+    print(np.sum(counts))
     np.savetxt(f"cumulative_return_distribution.dat", cumulative_distribution)
     return bins, log_returns, cumulative_distribution
 
