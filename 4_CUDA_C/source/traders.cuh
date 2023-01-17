@@ -21,8 +21,6 @@ enum {C_BLACK, C_WHITE};
  * @field reduced_alpha The parameter alpha multiplied by -2 times beta
  * @field lattice_height The desired height of the lattice
  * @field lattice_width The desired width of the lattice
- * @field words_per_row The number of computer words per row as a result of the chosen configuration
- * @field total_words The total number of words
  * @field pitch The pitch of the precomputed probabilities which is needed in the call to cudaMemcpy2D()
  * @field rng_offset An offset that can be passed to the random number generator to resume a simulation
  * @field percentage_up The relative amount of spins pointing upwards when initialising the arrays.
@@ -104,7 +102,7 @@ void precompute_probabilities(float* probabilities, const float market_coupling,
   for (int spin = 0; spin < 2; spin++) {
     for (int idx = 0; idx < 5; idx++) {
       int neighbour_sum = 2 * idx - 4;
-      float field = reduced_j * neighbour_sum + market_coupling * (-1 + 2 * spin);
+      float field = reduced_j * neighbour_sum - market_coupling * (-1 + 2 * spin);
       h_probabilities[spin][idx] = 1.0 / (1.0 + exp(field));
     }
   }
@@ -237,7 +235,7 @@ float update(int iteration,
   long long magnetisation = sum_array(d_black_tiles, params.lattice_height * params.lattice_width / 2);
   magnetisation += sum_array(d_white_tiles, params.lattice_height * params.lattice_width / 2);
   float relative_magnetisation = magnetisation / static_cast<double>(params.lattice_height * params.lattice_width);
-  float market_coupling = -params.reduced_alpha * fabs(relative_magnetisation);
+  float market_coupling = params.reduced_alpha * fabs(relative_magnetisation);
 
   precompute_probabilities(d_probabilities, market_coupling, params.reduced_j, params.pitch);
   CHECK_CUDA(cudaDeviceSynchronize())

@@ -80,3 +80,10 @@ but also roughly 10 times more complex to read.
 
 ## 5. Give it all we got
 
+We've gone to far now to go back. We are now all in with the optimised CUDA C
+implementation. To try it out change into ```5_CUDA_All_In``` and build the
+application using CMake or the CLion IDE. The compiled program runs just as 
+the previous binaries by executing ```./multising```. This implementation
+run another 4 times faster than the "normal" CUDA C simulation.
+
+
